@@ -1,0 +1,33 @@
+{% extends 'partials/base.html' %} {% block content %}
+
+<section class="pt-5 pb-5">
+    <div class="container">
+        <div class="row mt-0 mt-md-4">
+            {% include 'patient/sidebar.html' %}
+
+            <div class="col-lg-9 col-md-8 col-12">
+                <h4 class="mb-0 mb-4 fw-bold">نوبت</h4>
+                <div class="card mb-4">
+                    <!-- Single item -->
+
+                    {% for a in appointments %}
+                    <div class="shadow border p-3 mb-4 rounded-4">
+                        <a href="{% url 'patient:appointment_detail' a.appointment_id %}">
+                            <p><span class="fw-semibold text-dark">شناسه نوبت:</span> #{{a.appointment_id}}</p>
+                            <p><span class="fw-semibold text-dark">خدمت:</span> {{a.service.name}}</p>
+                            <p><span class="fw-semibold text-dark">پزشک:</span> {{a.doctor.full_name}}</p>
+                            <p><span class="fw-semibold text-dark">مشکل:</span> {{a.issues}}</p>
+                            <p><span class="fw-semibold text-dark">علائم:</span> {{a.symptoms}}</p>
+                            <p><span class="fw-semibold text-dark">وضعیت:</span> {{a.status}}</p>
+                            <p><span class="fw-semibold text-dark">تاریخ:</span> {{a.appointment_date}}</p>
+                            <button class="btn btn-secondary btn-sm">مشاهده بیشتر <i class="fas fa-eye ms-2"></i></button>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends 'partials/base.html' %} {% block content %}
+<section class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-12 col-lg-7 p-4 rounded-3 bg-white">
+            <h1 class="display-4 fw-bold mt-5">
+                <span class="text-primary"><b>مراقبت فوق العاده</b></span> درست اینجا با <span class="text-primary">شما است.</span>
+            </h1>
+            <p class="fs-4 mt-4">هر بیمار متفاوت است، هر لبخند منحصر به فرد است، ما ایمنی را با بررسی‌های بهداشتی، ورود بدون تماس، تجهیزات حفاظتی پیشرفته و موارد دیگر در اولویت قرار می‌دهیم.</p>
+            <div class="d-flex align-items-center gap-2 mt-5">
+                <button class="btn btn-primary btn-lg">ایجاد حساب <i class="fas fa-user-plus ms-1"></i></button>
+                <button class="btn btn-outline-primary btn-lg">رزرو وقت <i class="fas fa-arrow-right ms-2"></i></button>
+            </div>
+        </div>
+        <div class="col-12 col-lg-5">
+            <img class="img-fluid mt-4" style="width: 100%; height: 350px; object-fit: cover; border-radius: 10px" src="https://cdn.nody.ir/files/2021/10/06/nody-%D8%B9%DA%A9%D8%B3-%D8%AF%D8%A7%D8%AE%D9%84-%D8%A8%DB%8C%D9%85%D8%A7%D8%B1%D8%B3%D8%AA%D8%A7%D9%86-1633533250.jpg" alt="" />
+        </div>
+    </div>
+</section>
+
+<section class="container mt-5">
+    <div class="py-4">
+        <h2 class="">خدمات ما</h2>
+        <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+    </div>
+    <div class="row">
+        {% for s in services %}
+        <div class="col-lg-3">
+            <div class="card mb-4 shadow">
+                <a href="{% url 'base:service_detail' s.id %}">
+                    <img src="{{s.image.url}}" alt="course" style="height: 200px; object-fit: cover" class="card-img-top" />
+                </a>
+                <div class="card-body">
+                    <h4 class="mb-2 text-truncate-line-2"><a href="{% url 'base:service_detail' s.id %}" class="text-inherit text-dark text-decoration-none">{{s.name}}</a></h4>
+                    <p>{{s.description|truncatechars:40}}</p>
+                    <div class="mt-2">
+                        <span class="fw-semibold">پزشکان موجود: {{s.available_doctors.all.count}}</span>
+                        <div class="lh-1 mt-3">
+                            <span class="text-dark fw-bold fs-4">تومان{{s.cost}}</span>
+                        </div>
+                        <a href="{% url 'base:service_detail' s.id %}" class="btn btn-sm btn-primary mt-3">رزرو وقت <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container mt-5">
+    <div class="row d-flex align-items-center">
+        <div class="col-lg-6">
+            <h1 class="fw-bold">همین حالا وقت بگیرید!</h1>
+            <p class="text-secondary">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+
+            <div class="d-flex align-items-center gap-2 mt-5">
+                <button class="btn btn-outline-primary"><i class="fas fa-video ms-1"></i> مشاهده خدمات</button>
+                <button class="btn btn-primary">ایجاد حساب <i class="fas fa-user-plus ms-1"></i></button>
+                <button class="btn btn-primary">بیشتر بدانید <i class="fas fa-arrow-right ms-1"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://www.mckenzielake.com/wp-content/uploads/2022/06/iStock-1299777111.jpg" class="img-fluid rounded" style="height: 400px" alt="" />
+        </div>
+    </div>
+</section>
+{% endblock content %}

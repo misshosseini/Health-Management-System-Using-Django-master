@@ -1,0 +1,160 @@
+{% extends 'partials/base.html' %} {% block content %}
+<section class="pt-5 pb-5">
+    <div class="container">
+        <div class="row mt-0 mt-md-4">
+            {% include 'doctor/sidebar.html' %}
+
+            <div class="col-lg-9 col-md-8 col-12">
+                <h4 class="mb-0 mb-4 fw-bold">جزئیات نوبت #12345</h4>
+                <div class="card mb-4">
+                    <div class="shadow border p-3 mb-4 rounded-4">
+                        <p>
+                            <a>
+                                <p><span class="fw-semibold text-dark">شناسه نوبت:</span> #{{appointment.appointment_id}}</p>
+                                <p><span class="fw-semibold text-dark">خدمت:</span> {{appointment.service.name}}</p>
+                                <p><span class="fw-semibold text-dark">بیمار:</span> {{appointment.patient.full_name}}</p>
+                                <p><span class="fw-semibold text-dark">مشکل:</span> {{appointment.issues}}</p>
+                                <p><span class="fw-semibold text-dark">علائم:</span> {{appointment.symptoms}}</p>
+                                <p><span class="fw-semibold text-dark">وضعیت:</span> {{appointment.status}}</p>
+                                <p><span class="fw-semibold text-dark">تاریخ:</span> {{appointment.appointment_date}}</p>
+                                <p>
+                                    <span class="fw-semibold text-dark">اقدام:</span>
+
+                                    {% if appointment.status == "Scheduled" %}
+                                    <a href="{% url 'doctor:cancel_appointment' appointment.appointment_id %}" class="btn btn-outline-danger btn-sm">لغو نوبت <i class="fas fa-trash ms-2"></i></a>
+                                    <a href="{% url 'doctor:complete_appointment' appointment.appointment_id %}" class="btn btn-outline-success btn-sm">تکمیل نوبت <i class="fas fa-check-circle ms-2"></i></a>
+                                    {% endif %} {% if appointment.status == "Cancelled" %}
+                                    <a href="{% url 'doctor:activate_appointment' appointment.appointment_id %}" class="btn btn-success btn-sm">فعال کردن نوبت <i class="fas fa-check-circle ms-2"></i></a>
+                                    {% endif %} {% if appointment.status == "Completed" %}
+                                    <a href="{% url 'doctor:activate_appointment' appointment.appointment_id %}" class="btn btn-success btn-sm">تکمیل شده <i class="fas fa-check-circle ms-2"></i></a>
+                                    {% endif %}
+                                </p>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                <div id="medical-report">
+                    <div class="d-flex justify-content-between">
+                        <h4 class="mb-0 mb-4 fw-bold">گزارشات پزشکی</h4>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMedicalReport" aria-expanded="false" aria-controls="collapseMedicalReport">افزودن گزارش پزشکی <i class="fas fa-plus ms-2"></i></button>
+                    </div>
+                    <div class="collapse" id="collapseMedicalReport">
+                        <div class="border p-3 mb-4 rounded-4">
+                            <form action="{% url 'doctor:add_medical_report' appointment.appointment_id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="text" class="form-control mb-3" name="diagnosis" placeholder="تشخیص" />
+                                <input type="text" class="form-control mb-3" name="treatment" placeholder="درمان" />
+                                <button type="submit" class="btn btn-secondary btn-sm">ذخیره <i class="fas fa-save ms-2"></i></button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="border p-3 mb-4 rounded-4">
+                            {% for m in medical_records %}
+                            <div class="shadow p-3 rounded-4 mb-3">
+                                <p><span class="fw-semibold text-dark">تشخیص:</span> {{m.diagnosis}}</p>
+                                <p><span class="fw-semibold text-dark">درمان:</span> {{m.treatment}}</p>
+                                <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMedicalRecord{{m.id}}" aria-expanded="false" aria-controls="collapseMedicalRecord{{m.id}}">ویرایش <i class="fas fa-edit ms-2"></i></button>
+                                <div class="collapse mt-3" id="collapseMedicalRecord{{m.id}}">
+                                    <div class="border p-3 rounded-4">
+                                        <form action="{% url 'doctor:edit_medical_report' appointment.appointment_id m.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="text" class="form-control mb-3" value="{{m.diagnosis}}" name="diagnosis" placeholder="تشخیص" />
+                                            <input type="text" class="form-control mb-3" value="{{m.treatment}}" name="treatment" placeholder="درمان" />
+                                            <button type="submit" class="btn btn-secondary btn-sm">ذخیره تغییرات <i class="fas fa-save ms-2"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p>هیچ گزارش پزشکی وجود ندارد</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="lab-test">
+                    <div class="d-flex justify-content-between">
+                        <h4 class="mb-0 mb-4 fw-bold">گزارشات آزمایشگاهی</h4>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLabTest" aria-expanded="false" aria-controls="collapseLabTest">افزودن آزمایش <i class="fas fa-plus ms-2"></i></button>
+                    </div>
+                    <div class="collapse" id="collapseLabTest">
+                        <div class="border p-3 mb-4 rounded-4">
+                            <form action="{% url 'doctor:add_lab_test' appointment.appointment_id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="text" class="form-control mb-3" name="test_name" placeholder="نام آزمایش" />
+                                <input type="text" class="form-control mb-3" name="description" placeholder="توضیحات" />
+                                <textarea name="result" class="form-control" id="" placeholder="نتیجه آزمایش"></textarea>
+                                <button type="submit" class="btn btn-secondary btn-sm">ذخیره <i class="fas fa-save ms-2"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="border p-3 mb-4 rounded-4">
+                            {% for l in lab_tests %}
+                            <div class="shadow p-3 rounded-4 mb-3">
+                                <p><span class="fw-semibold text-dark">نام آزمایش:</span> {{l.test_name}}</p>
+                                <p><span class="fw-semibold text-dark">توضیحات:</span> {{l.description}}</p>
+                                <p><span class="fw-semibold text-dark">نتیجه:</span> {{l.result|default:"هنوز اضافه نشده"}}</p>
+                                <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLabTest{{l.id}}" aria-expanded="false" aria-controls="collapseLabTest{{l.id}}">ویرایش <i class="fas fa-edit ms-2"></i></button>
+                                <div class="collapse mt-3" id="collapseLabTest{{l.id}}">
+                                    <div class="border p-3 rounded-4">
+                                        <form action="{% url 'doctor:edit_lab_test' appointment.appointment_id l.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="text" class="form-control mb-3" value="{{l.test_name}}" name="test_name" placeholder="نام آزمایش" />
+                                            <input type="text" class="form-control mb-3" value="{{l.description}}" name="description" placeholder="توضیحات" />
+                                            <textarea name="result" class="form-control" id="" placeholder="نتیجه آزمایش">{{ l.result }}</textarea>
+
+                                            <button type="submit" class="btn btn-secondary btn-sm">ذخیره تغییرات <i class="fas fa-save ms-2"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p>هیچ آزمایشی وجود ندارد</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <h4 class="mb-0 mb-4 fw-bold">نسخه</h4>
+                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrescription" aria-expanded="false" aria-controls="collapsePrescription">افزودن نسخه <i class="fas fa-plus ms-2"></i></button>
+                </div>
+                <div class="collapse" id="collapsePrescription">
+                    <div class="border p-3 mb-4 rounded-4">
+                        <form action="{% url 'doctor:add_prescription' appointment.appointment_id %}" method="POST">
+                            {% csrf_token %}
+                            <textarea class="form-control mb-3" name="medications" placeholder="داروها"></textarea>
+                            <button type="submit" class="btn btn-secondary btn-sm">ذخیره <i class="fas fa-save ms-2"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="border p-3 mb-4 rounded-4">
+                        {% for p in prescriptions %}
+                        <div class="shadow p-3 rounded-4 mb-3">
+                            <p><span class="fw-semibold text-dark">داروها:</span> {{p.medications}}</p>
+                            <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrescription1" aria-expanded="false" aria-controls="collapsePrescription1">ویرایش <i class="fas fa-edit ms-2"></i></button>
+                            <div class="collapse mt-3" id="collapsePrescription1">
+                                <div class="border p-3 rounded-4">
+                                    <form action="{% url 'doctor:edit_prescription' appointment.appointment_id p.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="text" class="form-control mb-3" name="medications" value="{{p.medications}}" placeholder="داروها" />
+                                        <button type="submit" class="btn btn-secondary btn-sm">ذخیره تغییرات <i class="fas fa-save ms-2"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>هیچ نسخه‌ای وجود ندارد</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

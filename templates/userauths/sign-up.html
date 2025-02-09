@@ -1,0 +1,52 @@
+{% extends 'partials/base.html' %} {% block content %}
+
+<section class="container d-flex flex-column mt-5">
+    <div class="row align-items-center justify-content-center g-0 h-lg-100 py-8">
+        <div class="col-lg-5 col-md-8 py-8 py-xl-0">
+            <div class="card shadow">
+                <div class="card-body p-6">
+                    <div class="mb-4">
+                        <h1 class="mb-1 fw-bold">ثبت نام</h1>
+                        <span>
+                            قبلاً حساب کاربری دارید؟
+                            <a href="{% url 'userauths:sign-in' %}" class="ms-1"> وارد شوید </a>
+                        </span>
+                    </div>
+                    <form class="needs-validation" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label"> نام کامل </label>
+                            {{form.full_name}}
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label"> آدرس ایمیل </label>
+                            {{form.email}}
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label"> رمز عبور </label>
+                            {{form.password1}}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">تأیید رمز عبور </label>
+                            {{form.password2}}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">نوع کاربر </label>
+                            {{form.user_type}}
+                        </div>
+
+                        <div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">ثبت نام <i class="fas fa-user-plus ms-2"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
